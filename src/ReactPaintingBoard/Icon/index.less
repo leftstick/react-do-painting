@@ -1,0 +1,41 @@
+.iconBlock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid #fff;
+  transition: border 0.3s ease;
+  position: relative;
+
+  &:hover {
+    border: 1px solid #d7d7d7;
+  }
+}
+
+.disabled {
+  color: #b1b1b1;
+}
+
+.active {
+  background-color: #e6e6e6;
+}
+
+.tooltip {
+  position: absolute;
+  transform: translate(0, 30px);
+  height: 20px;
+  padding: 2px 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  background-color: #000;
+  opacity: 0.8;
+  color: #fff;
+  z-index: 10;
+}
+
+.hide {
+  display: none;
+}
