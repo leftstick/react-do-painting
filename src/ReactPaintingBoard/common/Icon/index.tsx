@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import classnames from 'classnames'
 
-import { capitalize } from '../helper'
-import { IToolType } from '../IType'
-import '../../assets/css/react-painting-icon.css'
+import { capitalize } from '@/ReactPaintingBoard/helper'
+import { IToolType } from '@/ReactPaintingBoard/IType'
+import '@/assets/css/react-painting-icon.css'
 import styles from './index.less'
 
 interface IIconProps {

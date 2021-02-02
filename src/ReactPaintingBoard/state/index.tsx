@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react'
 
-import { Color, IDrawMode, IAppContext, IDrawingTool, IShape } from '../IType'
+import { Color, IDrawMode, IAppContext, IDrawingTool, IShape } from '@/ReactPaintingBoard/IType'
 
 export const PaintingStateContext = React.createContext<IAppContext | null>(null)
 

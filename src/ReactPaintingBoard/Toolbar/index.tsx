@@ -1,18 +1,9 @@
 import React, { useContext } from 'react'
 
-import { PaintingStateContext } from '../state'
-import Divider from '../Divider'
+import { PaintingStateContext } from '@/ReactPaintingBoard/state'
+import { Divider } from '@/ReactPaintingBoard/common'
 
-import Undo from './tools/Undo'
-import Redo from './tools/Redo'
-import Select from './tools/Select'
-import Pen from './tools/Pen'
-import Text from './tools/Text'
-import Rect from './tools/Rect'
-import Circle from './tools/Circle'
-import Eraser from './tools/Eraser'
-import Clean from './tools/Clean'
-import Save from './tools/Save'
+import { Undo, Redo, Select, Pen, Text, Rect, Circle, Eraser, Clean, Save } from '@/ReactPaintingBoard/Toolbar/tools'
 
 import styles from './index.less'
 

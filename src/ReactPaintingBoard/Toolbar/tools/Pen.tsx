@@ -1,9 +1,9 @@
 import React, { useMemo, useContext, useState } from 'react'
 
-import { PaintingStateContext } from '../../state'
-import { Color, IAppContext, IDrawMode } from '../../IType'
+import { PaintingStateContext } from '@/ReactPaintingBoard/state'
+import { Color, IAppContext, IDrawMode } from '@/ReactPaintingBoard/IType'
 import Palette from '../Palette'
-import Icon from '../../Icon'
+import { Icon } from '@/ReactPaintingBoard/common'
 
 export default function Pen() {
   const [canPaletteVisible, setPaletteVisible] = useState(false)

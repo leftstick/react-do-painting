@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { isNumeric } from '../../helper'
-import { Color } from '../../IType'
-import Divider from '../../Divider'
+import { isNumeric } from '@/ReactPaintingBoard/helper'
+import { Color } from '@/ReactPaintingBoard/IType'
+import { Divider } from '@/ReactPaintingBoard/common'
 
 import styles from './index.less'
 

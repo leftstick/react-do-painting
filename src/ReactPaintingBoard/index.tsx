@@ -1,9 +1,9 @@
 import React from 'react'
-import SvgDrawingPad from './SvgDrawingPad'
 import classnames from 'classnames'
+import SvgDrawingPad from '@/ReactPaintingBoard/SvgDrawingPad'
 
-import { PaintingStateProvider } from './state'
-import Toolbar from './Toolbar'
+import { PaintingStateProvider } from '@/ReactPaintingBoard/state'
+import Toolbar from '@/ReactPaintingBoard/Toolbar'
 
 import styles from './index.less'
 

@@ -1,8 +1,8 @@
 import React, { useMemo, useEffect, useContext, useRef, useCallback } from 'react'
 
-import { ILine, IRect, IShape, IPoint, IAppContext, Color, IDrawingTool } from '../IType'
-import { PaintingStateContext } from '../state'
-import { id } from '../helper'
+import { ILine, IRect, IShape, IPoint, IAppContext, Color, IDrawingTool } from '@/ReactPaintingBoard/IType'
+import { PaintingStateContext } from '@/ReactPaintingBoard/state'
+import { id } from '@/ReactPaintingBoard/helper'
 
 import styles from './index.less'
 

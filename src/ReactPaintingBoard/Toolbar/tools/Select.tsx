@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
 
-import { PaintingStateContext } from '../../state'
-import { IAppContext, IDrawMode } from '../../IType'
-import Icon from '../../Icon'
+import { PaintingStateContext } from '@/ReactPaintingBoard/state'
+import { IAppContext, IDrawMode } from '@/ReactPaintingBoard/IType'
+import { Icon } from '@/ReactPaintingBoard/common'
 
 export default function Select() {
   const { setDrawMode, drawMode, setWorkingDrawTool } = useContext(PaintingStateContext) as IAppContext
