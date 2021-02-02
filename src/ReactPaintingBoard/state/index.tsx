@@ -58,6 +58,20 @@ export function PaintingStateProvider(props: any) {
     [setRedoShapes]
   )
 
+  const undo = useCallback(() => {
+    const lastOne = shapes[shapes.length - 1]
+    setShapes(shapes.slice(0, -1))
+
+    setRedoShapes((sp) => [...sp, lastOne])
+  }, [shapes, setShapes, setRedoShapes])
+
+  const redo = useCallback(() => {
+    const lastOne = redoShapes[redoShapes.length - 1]
+    setRedoShapes(redoShapes.slice(0, -1))
+
+    setShapes((sp) => [...sp, lastOne])
+  }, [redoShapes, setShapes, setRedoShapes])
+
   return (
     <PaintingStateContext.Provider
       value={{
@@ -76,6 +90,8 @@ export function PaintingStateProvider(props: any) {
         removeFromRedoShapes,
         selectedShape,
         setSelectedShape,
+        undo,
+        redo,
       }}
       {...props}
     />

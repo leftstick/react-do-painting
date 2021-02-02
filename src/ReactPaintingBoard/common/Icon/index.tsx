@@ -55,7 +55,11 @@ export default function Icon({
         onMouseLeave && onMouseLeave()
       }}
       className={classnames(styles.iconBlock, { [styles.disabled]: disabled, [styles.active]: !disabled && active })}
-      onClick={onClick}
+      onClick={(e) => {
+        if (!disabled) {
+          onClick && onClick(e)
+        }
+      }}
     >
       <i className={classnames(styles.icon, iconClass)} />
       {!children && (

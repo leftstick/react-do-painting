@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { PaintingStateContext } from '@/ReactPaintingBoard/state'
 import { Divider } from '@/ReactPaintingBoard/common'
 
-import { Undo, Redo, Select, Pen, Text, Rect, Circle, Eraser, Clean, Save } from '@/ReactPaintingBoard/Toolbar/tools'
+import { Undo, Redo, Select, Pen, Text, Rect, Circle, Clean, Save } from '@/ReactPaintingBoard/Toolbar/tools'
 
 import styles from './index.less'
 
@@ -25,7 +25,6 @@ export default function Toolbar() {
       <Rect />
       <Circle />
       <Divider length={25} />
-      <Eraser />
       <Clean />
       <Divider length={25} />
       <Save />

@@ -28,6 +28,17 @@ export interface IRect extends IShape {
   height: number
 }
 
+export interface IEllipse extends IShape {
+  cx: number
+  cy: number
+  rx: number
+  ry: number
+}
+
+export interface IText extends IShape {
+  words: string
+}
+
 export interface IDrawingTool {
   type: IShapeType
   drawWidth: number
@@ -63,4 +74,6 @@ export interface IAppContext {
   removeFromRedoShapes: (shape: IShape) => void
   selectedShape: IShape
   setSelectedShape: React.Dispatch<React.SetStateAction<IShape>>
+  undo: () => void
+  redo: () => void
 }
