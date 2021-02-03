@@ -24,7 +24,10 @@ export function PaintingStateProvider(props: any) {
   )
 
   const updateShape = useCallback(
-    (id: string, shape: IShape) => {
+    (id: string, shape: IShape | null) => {
+      if (!shape) {
+        return
+      }
       setShapes((sp) => {
         return sp.map((s) => {
           if (s.id !== id) {
@@ -72,6 +75,11 @@ export function PaintingStateProvider(props: any) {
     setShapes((sp) => [...sp, lastOne])
   }, [redoShapes, setShapes, setRedoShapes])
 
+  const cleanBoard = useCallback(() => {
+    setShapes([])
+    setRedoShapes([])
+  }, [setShapes, setRedoShapes])
+
   return (
     <PaintingStateContext.Provider
       value={{
@@ -92,6 +100,7 @@ export function PaintingStateProvider(props: any) {
         setSelectedShape,
         undo,
         redo,
+        cleanBoard,
       }}
       {...props}
     />

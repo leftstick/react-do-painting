@@ -36,7 +36,10 @@ export interface IEllipse extends IShape {
 }
 
 export interface IText extends IShape {
+  x: number
+  y: number
   words: string
+  editing: boolean
 }
 
 export interface IDrawingTool {
@@ -76,4 +79,5 @@ export interface IAppContext {
   setSelectedShape: React.Dispatch<React.SetStateAction<IShape>>
   undo: () => void
   redo: () => void
+  cleanBoard: () => void
 }
