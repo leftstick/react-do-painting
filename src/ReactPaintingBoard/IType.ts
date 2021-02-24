@@ -71,12 +71,11 @@ export interface IAppContext {
   shapes: IShape[]
   addShape: (shape: IShape) => void
   updateShape: (id: string, shape: IShape) => void
-  removeShape: (shape: IShape) => void
+  removeShape: (shapeId: string) => void
   redoShapes: IShape[]
-  addToRedoShapes: (shape: IShape) => void
-  removeFromRedoShapes: (shape: IShape) => void
+  cleanRedoShapes: () => void
   selectedShape: IShape
-  setSelectedShape: React.Dispatch<React.SetStateAction<IShape>>
+  setSelectedShape: React.Dispatch<React.SetStateAction<IShape | null>>
   undo: () => void
   redo: () => void
   cleanBoard: () => void

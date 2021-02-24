@@ -31,6 +31,7 @@ export default function Palette({ color, width, onColorChange, onWidthChange }: 
         className={styles.inputField}
         value={width}
         type="number"
+        data-type="IGNORE_BY_MOUSEUP"
         onChange={(e) => {
           const val = e.target.value
           if (!isNumeric(val)) {
@@ -55,7 +56,8 @@ export default function Palette({ color, width, onColorChange, onWidthChange }: 
                 color: c === Color.WHITE ? '#000' : '#fff',
                 cursor: color === c ? 'auto' : 'pointer',
               }}
-              onClick={() => {
+              data-type="IGNORE_BY_MOUSEUP"
+              onClick={(e) => {
                 onColorChange(c)
               }}
             >

@@ -1,5 +1,4 @@
-import React, { useMemo, useContext, useRef, useCallback, useEffect } from 'react'
-import classnames from 'classnames'
+import React, { useMemo, useContext, useRef, useCallback, useEffect, useState } from 'react'
 import {
   ILine,
   IRect,
@@ -14,136 +13,10 @@ import {
 import { PaintingStateContext } from '@/ReactPaintingBoard/state'
 import { id } from '@/ReactPaintingBoard/helper'
 
+import { Line, Rect, Ellipse, SvgText, DivText } from './shapes'
+import SelectBox from './SelectBox'
+
 import styles from './index.less'
-
-function DrawingLine({ drawing, line }: { line: ILine; drawing: boolean }) {
-  const pathData =
-    'M ' +
-    line.points
-      .map((p) => {
-        return `${p.x} ${p.y}`
-      })
-      .join(' L ')
-
-  return (
-    <path
-      id={line.id}
-      className={classnames(styles.path, { [styles.lineHover]: !drawing })}
-      d={pathData}
-      stroke={line.lineColor}
-      strokeWidth={line.lineWidth}
-    />
-  )
-}
-
-function DrawingRect({ drawing, rect }: { rect: IRect; drawing: boolean }) {
-  return (
-    <rect
-      id={rect.id}
-      x={rect.x}
-      y={rect.y}
-      width={rect.width}
-      height={rect.height}
-      style={{
-        fill: 'none',
-        stroke: rect.lineColor,
-        strokeWidth: rect.lineWidth,
-      }}
-      className={classnames({ [styles.rectHover]: !drawing })}
-    />
-  )
-}
-
-function DrawingEllipse({ drawing, ellipse }: { ellipse: IEllipse; drawing: boolean }) {
-  return (
-    <ellipse
-      id={ellipse.id}
-      cx={ellipse.cx}
-      cy={ellipse.cy}
-      rx={ellipse.rx}
-      ry={ellipse.ry}
-      style={{
-        fill: 'none',
-        stroke: ellipse.lineColor,
-        strokeWidth: ellipse.lineWidth,
-      }}
-      className={classnames({ [styles.ellipseHover]: !drawing })}
-    />
-  )
-}
-
-function DrawingSvgText({
-  drawing,
-  text,
-  onDoubleClick,
-}: {
-  text: IText
-  drawing: boolean
-  onDoubleClick: (e: React.MouseEvent<SVGTextElement, MouseEvent>) => void
-}) {
-  const lines = text.words.split('\n')
-  if (lines.length === 1) {
-    return (
-      <text
-        id={text.id}
-        x={text.x}
-        y={text.y}
-        onDoubleClick={onDoubleClick}
-        onMouseEnter={() => {
-          console.log('enter here')
-        }}
-        onMouseLeave={() => {
-          console.log('leave here')
-        }}
-        style={{
-          fontSize: text.lineWidth,
-          fill: text.lineColor,
-        }}
-        className={classnames({ [styles.textHover]: !drawing })}
-      >
-        {text.words}
-      </text>
-    )
-  }
-
-  return (
-    <text
-      id={text.id}
-      x={text.x}
-      y={text.y}
-      onDoubleClick={onDoubleClick}
-      style={{
-        fontSize: text.lineWidth,
-        fill: text.lineColor,
-      }}
-      className={classnames({ [styles.textHover]: !drawing })}
-    >
-      {lines.map((line, index) => {
-        return (
-          <tspan x={text.x} y={text.y + index * text.lineWidth}>
-            {line}
-          </tspan>
-        )
-      })}
-    </text>
-  )
-}
-
-function DrawingEditableText({ text, onChange }: { text: IText; onChange: (words: string) => void }) {
-  const divRef = useRef<HTMLDivElement>(null)
-  return (
-    <div
-      ref={divRef}
-      style={{ left: text.x, top: text.y - text.lineWidth, fontSize: text.lineWidth, color: text.lineColor }}
-      className={styles.editingText}
-      contentEditable
-      onBlur={() => {
-        onChange && onChange(divRef.current?.innerText!)
-      }}
-      dangerouslySetInnerHTML={{ __html: text.words.replace(/\n/g, '<br/>') }}
-    />
-  )
-}
 
 function createShape(point: IPoint, workingDrawTool: IDrawingTool): IShape | null {
   if (workingDrawTool.type === 'line') {
@@ -266,24 +139,44 @@ function drawEllipse(ellipse: IEllipse, point: IPoint): IEllipse | null {
   }
 }
 
-function cleanJustClickedShape(shapes: IShape[], removeShape: (shape: IShape) => void) {
+function cleanJustClickedShape(shapes: IShape[], removeShape: (shapeId: string) => void) {
   if (!shapes.length) {
-    return
+    return false
   }
   const lastShape = shapes[shapes.length - 1]
   if (lastShape.type === 'line' && (lastShape as ILine).points.length === 1) {
-    removeShape(lastShape)
+    removeShape(lastShape.id)
+    return true
   }
   if (lastShape.type === 'rect' && ((lastShape as IRect).width <= 1 || (lastShape as IRect).height <= 1)) {
-    removeShape(lastShape)
+    removeShape(lastShape.id)
+    return true
   }
+  if (lastShape.type === 'circle' && ((lastShape as IEllipse).rx <= 1 || (lastShape as IEllipse).ry <= 1)) {
+    removeShape(lastShape.id)
+    return true
+  }
+  return false
 }
 
 export default function SvgDrawingPad() {
   const drawAreaRef = useRef<HTMLDivElement>(null)
-  const { drawing, setDrawing, drawMode, shapes, addShape, updateShape, workingDrawTool, removeShape } = useContext(
-    PaintingStateContext
-  ) as IAppContext
+  const [cleanUnfinishedShapeThreshold, setCleanUnfinishedShapeThreshold] = useState<number>(0)
+  const {
+    drawing,
+    setDrawing,
+    drawMode,
+    setDrawMode,
+    shapes,
+    addShape,
+    updateShape,
+    workingDrawTool,
+    setWorkingDrawTool,
+    removeShape,
+    selectedShape,
+    setSelectedShape,
+    cleanRedoShapes,
+  } = useContext(PaintingStateContext) as IAppContext
   const lines = useMemo(() => shapes.filter((s) => s.type === 'line'), [shapes])
   const rects = useMemo(() => shapes.filter((s) => s.type === 'rect'), [shapes])
   const ellipses = useMemo(() => shapes.filter((s) => s.type === 'circle'), [shapes])
@@ -306,7 +199,6 @@ export default function SvgDrawingPad() {
 
   const handleMouseDown = useCallback<(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void>(
     (e) => {
-      console.log('mouse down here')
       // not left click, ignore
       if (e.button !== 0 || e.buttons !== 1) {
         return
@@ -359,17 +251,71 @@ export default function SvgDrawingPad() {
     [drawing, drawMode, updateShape, shapes, workingDrawTool, relativeCoordinatesForEvent]
   )
 
+  const cleanUnfinishedShape = useCallback(() => {
+    // remove just clicked shape
+    const removed = cleanJustClickedShape(shapes, removeShape)
+    if (!removed) {
+      cleanRedoShapes()
+    }
+  }, [cleanRedoShapes, shapes, removeShape])
+
   const handleMouseUp = useCallback(
     (e) => {
+      // ignore if click from toolbar, selectbox
+      if (e.target.dataset && e.target.dataset.type === 'IGNORE_BY_MOUSEUP') {
+        return
+      }
+
       if (drawMode === IDrawMode.DRAW) {
         // end drawing
         setDrawing(false)
-        // remove just clicked shape
-        cleanJustClickedShape(shapes, removeShape)
-        return
+
+        setCleanUnfinishedShapeThreshold(new Date().getTime())
+      }
+
+      if (drawMode !== IDrawMode.SELECT) {
+        setDrawMode(IDrawMode.SELECT)
+        setWorkingDrawTool(null)
+      }
+
+      if (drawMode === IDrawMode.SELECT) {
+        if (selectedShape) {
+          setSelectedShape(null)
+        }
       }
     },
-    [setDrawing, drawMode, shapes, removeShape]
+    [
+      setDrawing,
+      drawMode,
+      setDrawMode,
+      setWorkingDrawTool,
+      selectedShape,
+      setSelectedShape,
+      setCleanUnfinishedShapeThreshold,
+    ]
+  )
+
+  const selectShape = useCallback(
+    (e, shape: IShape) => {
+      e.stopPropagation()
+      e.preventDefault()
+      if (selectedShape && selectedShape.id === shape.id) {
+        return
+      }
+      setSelectedShape(shape)
+    },
+    [selectedShape, setSelectedShape]
+  )
+
+  const moving = useCallback(
+    (shape: IShape) => {
+      if (!selectedShape) {
+        return
+      }
+      updateShape(selectedShape.id, shape)
+      setSelectedShape(shape)
+    },
+    [selectedShape, updateShape, setSelectedShape]
   )
 
   useEffect(() => {
@@ -377,7 +323,13 @@ export default function SvgDrawingPad() {
     return () => {
       document.removeEventListener('mouseup', handleMouseUp, false)
     }
-  }, [handleMouseUp])
+  }, [handleMouseUp, shapes])
+
+  useEffect(() => {
+    cleanUnfinishedShape()
+    // Note: only watch cleanUnfinishedShapeThreshold here
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cleanUnfinishedShapeThreshold])
 
   return (
     <div
@@ -385,22 +337,47 @@ export default function SvgDrawingPad() {
       ref={drawAreaRef}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
+      onDragOver={(e) => e.preventDefault()}
     >
       <svg className={styles.drawing}>
         {lines.map((line, index) => (
-          <DrawingLine drawing={drawing} key={line.id} line={line as ILine} />
+          <Line
+            drawing={drawing}
+            key={line.id}
+            line={line as ILine}
+            onClick={(e) => {
+              selectShape(e, line)
+            }}
+          />
         ))}
         {rects.map((rect, index) => (
-          <DrawingRect drawing={drawing} key={rect.id} rect={rect as IRect} />
+          <Rect
+            drawing={drawing}
+            key={rect.id}
+            rect={rect as IRect}
+            onClick={(e) => {
+              selectShape(e, rect)
+            }}
+          />
         ))}
         {ellipses.map((ellipse, index) => (
-          <DrawingEllipse drawing={drawing} key={ellipse.id} ellipse={ellipse as IEllipse} />
+          <Ellipse
+            drawing={drawing}
+            key={ellipse.id}
+            ellipse={ellipse as IEllipse}
+            onClick={(e) => {
+              selectShape(e, ellipse)
+            }}
+          />
         ))}
         {svgTexts.map((text, index) => (
-          <DrawingSvgText
+          <SvgText
             drawing={drawing}
             key={text.id}
             text={text as IText}
+            onClick={(e) => {
+              selectShape(e, text)
+            }}
             onDoubleClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
@@ -413,7 +390,7 @@ export default function SvgDrawingPad() {
         ))}
       </svg>
       {divTexts.map((text, index) => (
-        <DrawingEditableText
+        <DivText
           key={text.id}
           text={text as IText}
           onChange={(words) => {
@@ -425,6 +402,15 @@ export default function SvgDrawingPad() {
           }}
         />
       ))}
+
+      {selectedShape && (
+        <SelectBox
+          shape={selectedShape}
+          containerBoundingClientRect={drawAreaRef.current && drawAreaRef.current.getBoundingClientRect()}
+          onMoving={moving}
+          onClose={removeShape}
+        />
+      )}
     </div>
   )
 }

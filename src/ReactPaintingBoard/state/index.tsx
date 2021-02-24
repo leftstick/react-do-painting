@@ -14,7 +14,7 @@ export function PaintingStateProvider(props: any) {
   })
   const [shapes, setShapes] = useState<IShape[]>([])
   const [redoShapes, setRedoShapes] = useState<IShape[]>([])
-  const [selectedShape, setSelectedShape] = useState<IShape>()
+  const [selectedShape, setSelectedShape] = useState<IShape | null>(null)
 
   const addShape = useCallback(
     (shape: IShape) => {
@@ -41,25 +41,16 @@ export function PaintingStateProvider(props: any) {
   )
 
   const removeShape = useCallback(
-    (shape: IShape) => {
-      setShapes((sp) => sp.filter((s) => s.id !== shape.id))
+    (shapeId: string) => {
+      setShapes((sp) => sp.filter((s) => s.id !== shapeId))
+      setSelectedShape(null)
     },
-    [setShapes]
+    [setShapes, setSelectedShape]
   )
 
-  const addToRedoShapes = useCallback(
-    (shape: IShape) => {
-      setRedoShapes((sp) => [...sp, shape])
-    },
-    [setRedoShapes]
-  )
-
-  const removeFromRedoShapes = useCallback(
-    (shape: IShape) => {
-      setRedoShapes((sp) => sp.filter((s) => s.id !== shape.id))
-    },
-    [setRedoShapes]
-  )
+  const cleanRedoShapes = useCallback(() => {
+    setRedoShapes([])
+  }, [setRedoShapes])
 
   const undo = useCallback(() => {
     const lastOne = shapes[shapes.length - 1]
@@ -94,8 +85,7 @@ export function PaintingStateProvider(props: any) {
         updateShape,
         removeShape,
         redoShapes,
-        addToRedoShapes,
-        removeFromRedoShapes,
+        cleanRedoShapes,
         selectedShape,
         setSelectedShape,
         undo,
