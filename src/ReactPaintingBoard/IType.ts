@@ -80,3 +80,7 @@ export interface IAppContext {
   redo: () => void
   cleanBoard: () => void
 }
+
+export interface ICancelablePromise<T> extends Promise<T> {
+  cancel: () => void
+}

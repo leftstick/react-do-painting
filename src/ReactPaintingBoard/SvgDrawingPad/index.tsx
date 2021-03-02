@@ -379,8 +379,6 @@ export default function SvgDrawingPad() {
               selectShape(e, text)
             }}
             onDoubleClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
               updateShape(text.id, {
                 ...text,
                 editing: true,

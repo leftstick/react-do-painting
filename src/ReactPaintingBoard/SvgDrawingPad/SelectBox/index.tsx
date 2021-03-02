@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import classnames from 'classnames'
 
-import { ILine, IPoint, IShape } from '@/ReactPaintingBoard/IType'
+import { ILine, IPoint, IRect, IShape, IEllipse, IText } from '@/ReactPaintingBoard/IType'
 import '@/assets/css/react-painting-icon.css'
 
 import styles from './index.less'
@@ -13,13 +13,65 @@ interface ISelectBoxProps {
   onClose: (shapeId: string) => void
 }
 
+function toLine(line: ILine, clickPosition: IPoint, originalClickPosition: IPoint): IShape {
+  const points = line.points
+  const offset = {
+    x: clickPosition.x - originalClickPosition.x,
+    y: clickPosition.y - originalClickPosition.y,
+  }
+
+  return {
+    ...line,
+    points: points.map((p) => ({ x: p.x + offset.x, y: p.y + offset.y })),
+  } as IShape
+}
+
+function toRect(rect: IRect, clickPosition: IPoint, originalClickPosition: IPoint): IShape {
+  const offset = {
+    x: clickPosition.x - originalClickPosition.x,
+    y: clickPosition.y - originalClickPosition.y,
+  }
+
+  return {
+    ...rect,
+    x: rect.x + offset.x,
+    y: rect.y + offset.y,
+  } as IShape
+}
+
+function toEllipse(ellipse: IEllipse, clickPosition: IPoint, originalClickPosition: IPoint): IShape {
+  const offset = {
+    x: clickPosition.x - originalClickPosition.x,
+    y: clickPosition.y - originalClickPosition.y,
+  }
+
+  return {
+    ...ellipse,
+    cx: ellipse.cx + offset.x,
+    cy: ellipse.cy + offset.y,
+  } as IShape
+}
+
+function toText(text: IText, clickPosition: IPoint, originalClickPosition: IPoint): IShape {
+  const offset = {
+    x: clickPosition.x - originalClickPosition.x,
+    y: clickPosition.y - originalClickPosition.y,
+  }
+
+  return {
+    ...text,
+    x: text.x + offset.x,
+    y: text.y + offset.y,
+  } as IShape
+}
+
 export default function SelectBox({
   shape,
   containerBoundingClientRect,
   onMoving,
   onClose,
 }: ISelectBoxProps): JSX.Element {
-  const [originalStartPoint, setOriginalStartPoint] = useState<IPoint>({ x: 0, y: 0 })
+  const [originalClickPosition, setOriginalClickPosition] = useState<IPoint>({ x: 0, y: 0 })
   const [originalClickOffsetToRect, setOriginalClickOffsetToRect] = useState<IPoint>({ x: 0, y: 0 })
   const [originalShape, setOriginalShape] = useState<IShape>(shape)
   const [resetOriginalShapeTrigger, setResetOriginalShapeTrigger] = useState<number>(0)
@@ -44,10 +96,10 @@ export default function SelectBox({
       }
     }
     return {
-      top: rect.top - containerBoundingClientRect.top - 5,
-      left: rect.left - containerBoundingClientRect.left - 5,
-      width: rect.width + 10,
-      height: rect.height + 10,
+      top: rect.top - containerBoundingClientRect.top - 8,
+      left: rect.left - containerBoundingClientRect.left - 8,
+      width: rect.width + 16,
+      height: rect.height + 16,
     }
   }, [shapeId, containerBoundingClientRect])
 
@@ -89,39 +141,42 @@ export default function SelectBox({
         }
 
         setOriginalClickOffsetToRect(clickOffsetToBox)
-        setOriginalStartPoint(startPoint)
+        setOriginalClickPosition(startPoint)
       }}
       onDrag={(e) => {
         if (!onMoving) {
           return
         }
+        if (e.clientX === 0 && e.clientY === 0) {
+          return
+        }
+        const clickPosition = {
+          x: e.clientX - containerBoundingClientRect.left,
+          y: e.clientY - containerBoundingClientRect.top,
+        }
+        if (
+          clickPosition.x - originalClickOffsetToRect.x < 1 ||
+          clickPosition.x - originalClickOffsetToRect.x + boxRect.width > containerBoundingClientRect.width ||
+          clickPosition.y - originalClickOffsetToRect.y < 1 ||
+          clickPosition.y - originalClickOffsetToRect.y + boxRect.height > containerBoundingClientRect.height
+        ) {
+          return
+        }
+
+        let newShape = null
+
         if (shape.type === 'line') {
-          const points = (originalShape as ILine).points
-          if (e.clientX === 0 && e.clientY === 0) {
-            return
-          }
-          const clickPosition = {
-            x: e.clientX - containerBoundingClientRect.left,
-            y: e.clientY - containerBoundingClientRect.top,
-          }
-          const offset = {
-            x: clickPosition.x - originalStartPoint.x,
-            y: clickPosition.y - originalStartPoint.y,
-          }
+          newShape = toLine(originalShape as ILine, clickPosition, originalClickPosition)
+        } else if (shape.type === 'rect') {
+          newShape = toRect(originalShape as IRect, clickPosition, originalClickPosition)
+        } else if (shape.type === 'circle') {
+          newShape = toEllipse(originalShape as IEllipse, clickPosition, originalClickPosition)
+        } else if (shape.type === 'text') {
+          newShape = toText(originalShape as IText, clickPosition, originalClickPosition)
+        }
 
-          if (
-            clickPosition.x - originalClickOffsetToRect.x < 1 ||
-            clickPosition.x - originalClickOffsetToRect.x + boxRect.width > containerBoundingClientRect.width ||
-            clickPosition.y - originalClickOffsetToRect.y < 1 ||
-            clickPosition.y - originalClickOffsetToRect.y + boxRect.height > containerBoundingClientRect.height
-          ) {
-            return
-          }
-
-          onMoving({
-            ...shape,
-            points: points.map((p) => ({ x: p.x + offset.x, y: p.y + offset.y })),
-          } as IShape)
+        if (newShape) {
+          onMoving(newShape)
         }
       }}
       onDragEnd={(e) => {
