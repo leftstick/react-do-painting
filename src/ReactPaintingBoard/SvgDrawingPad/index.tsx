@@ -11,9 +11,20 @@ import {
   IDrawMode,
 } from '@/ReactPaintingBoard/IType'
 import { PaintingStateContext } from '@/ReactPaintingBoard/state'
-import { id } from '@/ReactPaintingBoard/helper'
 
-import { Line, Rect, Ellipse, SvgText, DivText } from './shapes'
+import {
+  Line,
+  createLine,
+  drawLine,
+  Rect,
+  createRect,
+  drawRect,
+  Ellipse,
+  createEllipse,
+  drawEllipse,
+  DivText,
+  createText,
+} from './shapes'
 import SelectBox from './SelectBox'
 
 import styles from './index.less'
@@ -34,55 +45,6 @@ function createShape(point: IPoint, workingDrawTool: IDrawingTool): IShape | nul
   return null
 }
 
-function createLine(point: IPoint, workingDrawTool: IDrawingTool): ILine {
-  return {
-    id: id(),
-    lineColor: workingDrawTool.drawColor,
-    lineWidth: workingDrawTool.drawWidth,
-    type: 'line',
-    points: [point],
-  }
-}
-
-function createRect(point: IPoint, workingDrawTool: IDrawingTool): IRect {
-  return {
-    id: id(),
-    lineColor: workingDrawTool.drawColor,
-    lineWidth: workingDrawTool.drawWidth,
-    type: 'rect',
-    x: point.x,
-    y: point.y,
-    width: 1,
-    height: 1,
-  }
-}
-
-function createEllipse(point: IPoint, workingDrawTool: IDrawingTool): IEllipse {
-  return {
-    id: id(),
-    lineColor: workingDrawTool.drawColor,
-    lineWidth: workingDrawTool.drawWidth,
-    type: 'circle',
-    cx: point.x,
-    cy: point.y,
-    rx: 1,
-    ry: 1,
-  }
-}
-
-function createText(point: IPoint, workingDrawTool: IDrawingTool): IText {
-  return {
-    id: id(),
-    lineColor: workingDrawTool.drawColor,
-    lineWidth: workingDrawTool.drawWidth,
-    type: 'text',
-    x: point.x,
-    y: point.y,
-    words: 'Type words here',
-    editing: true,
-  }
-}
-
 function drawShape(point: IPoint, workingDrawTool: IDrawingTool, shapes: IShape[]): IShape | null {
   if (workingDrawTool.type === 'line') {
     const lastLine = shapes[shapes.length - 1] as ILine
@@ -100,43 +62,6 @@ function drawShape(point: IPoint, workingDrawTool: IDrawingTool, shapes: IShape[
     return null
   }
   return null
-}
-
-function drawLine(line: ILine, point: IPoint): ILine {
-  return {
-    ...line,
-    points: [...line.points, point],
-  }
-}
-
-function drawRect(rect: IRect, point: IPoint): IRect | null {
-  const width = point.x - rect.x
-  const height = point.y - rect.y
-
-  if (width < 1 || height < 1) {
-    return null
-  }
-
-  return {
-    ...rect,
-    width,
-    height,
-  }
-}
-
-function drawEllipse(ellipse: IEllipse, point: IPoint): IEllipse | null {
-  const rx = point.x - ellipse.cx
-  const ry = point.y - ellipse.cy
-
-  if (rx < 1 || ry < 1) {
-    return null
-  }
-
-  return {
-    ...ellipse,
-    rx,
-    ry,
-  }
 }
 
 function cleanJustClickedShape(shapes: IShape[], removeShape: (shapeId: string) => void) {
@@ -184,8 +109,7 @@ export default function SvgDrawingPad({ id }: ISvgDrawingPadProps) {
   const lines = useMemo(() => shapes.filter((s) => s.type === 'line'), [shapes])
   const rects = useMemo(() => shapes.filter((s) => s.type === 'rect'), [shapes])
   const ellipses = useMemo(() => shapes.filter((s) => s.type === 'circle'), [shapes])
-  const svgTexts = useMemo(() => shapes.filter((s) => s.type === 'text' && !(s as IText).editing), [shapes])
-  const divTexts = useMemo(() => shapes.filter((s) => s.type === 'text' && (s as IText).editing), [shapes])
+  const divTexts = useMemo(() => shapes.filter((s) => s.type === 'text'), [shapes])
 
   const relativeCoordinatesForEvent = useCallback<(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => IPoint | null>(
     (e) => {
@@ -375,27 +299,21 @@ export default function SvgDrawingPad({ id }: ISvgDrawingPadProps) {
             }}
           />
         ))}
-        {svgTexts.map((text, index) => (
-          <SvgText
-            drawing={drawing}
-            key={text.id}
-            text={text as IText}
-            onClick={(e) => {
-              selectShape(e, text)
-            }}
-            onDoubleClick={(e) => {
-              updateShape(text.id, {
-                ...text,
-                editing: true,
-              } as IShape)
-            }}
-          />
-        ))}
       </svg>
       {divTexts.map((text, index) => (
         <DivText
           key={text.id}
+          drawing={drawing}
           text={text as IText}
+          onClick={(e) => {
+            selectShape(e, text)
+          }}
+          onDoubleClick={(e) => {
+            updateShape(text.id, {
+              ...text,
+              editing: true,
+            } as IShape)
+          }}
           onChange={(words) => {
             updateShape(text.id, {
               ...text,

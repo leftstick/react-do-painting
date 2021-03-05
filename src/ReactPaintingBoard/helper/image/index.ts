@@ -35,9 +35,13 @@ function draw(domNode: Element) {
     })
 
   function newCanvas(domNode: Element) {
-    var canvas = document.createElement('canvas')
+    const canvas = document.createElement('canvas')
     canvas.width = width(domNode)
     canvas.height = height(domNode)
+
+    const ctx = canvas.getContext('2d')
+    ctx!.fillStyle = '#fff'
+    ctx!.fillRect(0, 0, canvas.width, canvas.height)
 
     return canvas
   }
@@ -78,7 +82,9 @@ function cloneNode(node: Element | ChildNode, root: boolean) {
             return cloneNode(child, false)
           })
           .then((childClone) => {
-            if (childClone) parent.appendChild(childClone)
+            if (childClone) {
+              parent.appendChild(childClone)
+            }
           })
       })
       return done

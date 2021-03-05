@@ -1,7 +1,8 @@
 import React from 'react'
 import classnames from 'classnames'
 
-import { IEllipse } from '@/ReactPaintingBoard/IType'
+import { IEllipse, IPoint, IDrawingTool } from '@/ReactPaintingBoard/IType'
+import { id } from '@/ReactPaintingBoard/helper'
 
 import styles from './index.less'
 
@@ -11,7 +12,7 @@ interface IEllipseProps {
   onClick: (e: React.MouseEvent<SVGEllipseElement, MouseEvent>) => void
 }
 
-export default function Rect({ drawing, ellipse, onClick }: IEllipseProps) {
+export function Ellipse({ drawing, ellipse, onClick }: IEllipseProps) {
   return (
     <ellipse
       onClick={onClick}
@@ -28,4 +29,32 @@ export default function Rect({ drawing, ellipse, onClick }: IEllipseProps) {
       className={classnames({ [styles.ellipseHover]: !drawing })}
     />
   )
+}
+
+export function createEllipse(point: IPoint, workingDrawTool: IDrawingTool): IEllipse {
+  return {
+    id: id(),
+    lineColor: workingDrawTool.drawColor,
+    lineWidth: workingDrawTool.drawWidth,
+    type: 'circle',
+    cx: point.x,
+    cy: point.y,
+    rx: 1,
+    ry: 1,
+  }
+}
+
+export function drawEllipse(ellipse: IEllipse, point: IPoint): IEllipse | null {
+  const rx = point.x - ellipse.cx
+  const ry = point.y - ellipse.cy
+
+  if (rx < 1 || ry < 1) {
+    return null
+  }
+
+  return {
+    ...ellipse,
+    rx,
+    ry,
+  }
 }

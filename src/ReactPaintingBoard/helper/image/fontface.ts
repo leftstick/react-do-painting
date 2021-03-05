@@ -5,12 +5,12 @@ export function resolveAll() {
   return readAll()
     .then((webFonts) => {
       return Promise.all(
-        webFonts.map(function (webFont) {
+        webFonts.map((webFont) => {
           return webFont.resolve()
         })
       )
     })
-    .then(function (cssStrings) {
+    .then((cssStrings) => {
       return cssStrings.join('\n')
     })
 }

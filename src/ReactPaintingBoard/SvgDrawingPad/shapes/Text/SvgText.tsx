@@ -13,7 +13,7 @@ interface ITextProps {
   onClick: (e: MouseEvent) => void
 }
 
-export default function SvgText({ drawing, text, onClick, onDoubleClick }: ITextProps) {
+export function SvgText({ drawing, text, onClick, onDoubleClick }: ITextProps) {
   const stateRef = useRef<ICancelablePromise<any>[]>([])
 
   const addToPendingPromises = useCallback(

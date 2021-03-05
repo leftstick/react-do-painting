@@ -1,7 +1,8 @@
 import React from 'react'
 import classnames from 'classnames'
 
-import { IRect } from '@/ReactPaintingBoard/IType'
+import { IRect, IPoint, IDrawingTool } from '@/ReactPaintingBoard/IType'
+import { id } from '@/ReactPaintingBoard/helper'
 
 import styles from './index.less'
 
@@ -11,7 +12,7 @@ interface IRectProps {
   onClick: (e: React.MouseEvent<SVGRectElement, MouseEvent>) => void
 }
 
-export default function Rect({ drawing, rect, onClick }: IRectProps) {
+export function Rect({ drawing, rect, onClick }: IRectProps) {
   return (
     <rect
       onClick={onClick}
@@ -28,4 +29,32 @@ export default function Rect({ drawing, rect, onClick }: IRectProps) {
       className={classnames({ [styles.rectHover]: !drawing })}
     />
   )
+}
+
+export function createRect(point: IPoint, workingDrawTool: IDrawingTool): IRect {
+  return {
+    id: id(),
+    lineColor: workingDrawTool.drawColor,
+    lineWidth: workingDrawTool.drawWidth,
+    type: 'rect',
+    x: point.x,
+    y: point.y,
+    width: 1,
+    height: 1,
+  }
+}
+
+export function drawRect(rect: IRect, point: IPoint): IRect | null {
+  const width = point.x - rect.x
+  const height = point.y - rect.y
+
+  if (width < 1 || height < 1) {
+    return null
+  }
+
+  return {
+    ...rect,
+    width,
+    height,
+  }
 }
