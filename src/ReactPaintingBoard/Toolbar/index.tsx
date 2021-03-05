@@ -7,7 +7,11 @@ import { Undo, Redo, Select, Pen, Text, Rect, Circle, Clean, Save } from '@/Reac
 
 import styles from './index.less'
 
-export default function Toolbar() {
+interface IToolbarProps {
+  padId: string
+}
+
+export default function Toolbar({ padId }: IToolbarProps) {
   const ctx = useContext(PaintingStateContext)
 
   if (!ctx) {
@@ -27,7 +31,7 @@ export default function Toolbar() {
       <Divider length={25} />
       <Clean />
       <Divider length={25} />
-      <Save />
+      <Save padId={padId} />
     </div>
   )
 }

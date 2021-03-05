@@ -2,6 +2,7 @@ import React from 'react'
 import classnames from 'classnames'
 import SvgDrawingPad from '@/ReactPaintingBoard/SvgDrawingPad'
 
+import { id } from '@/ReactPaintingBoard/helper'
 import { PaintingStateProvider } from '@/ReactPaintingBoard/state'
 import Toolbar from '@/ReactPaintingBoard/Toolbar'
 
@@ -19,12 +20,13 @@ interface IReactPaintingProps {
 }
 
 const ReactPainting: React.FC<IReactPaintingProps> = ({ style, className }) => {
+  const padId = id()
   return (
     <div style={style} className={classnames(styles.appContainer, className)}>
       <PaintingStateProvider>
-        <Toolbar />
+        <Toolbar padId={padId} />
         <div className={styles.canvasContainer}>
-          <SvgDrawingPad />
+          <SvgDrawingPad id={padId} />
         </div>
       </PaintingStateProvider>
     </div>

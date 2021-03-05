@@ -159,7 +159,11 @@ function cleanJustClickedShape(shapes: IShape[], removeShape: (shapeId: string) 
   return false
 }
 
-export default function SvgDrawingPad() {
+interface ISvgDrawingPadProps {
+  id: string
+}
+
+export default function SvgDrawingPad({ id }: ISvgDrawingPadProps) {
   const drawAreaRef = useRef<HTMLDivElement>(null)
   const [cleanUnfinishedShapeThreshold, setCleanUnfinishedShapeThreshold] = useState<number>(0)
   const {
@@ -333,6 +337,7 @@ export default function SvgDrawingPad() {
 
   return (
     <div
+      id={id}
       className={styles.drawingAreaContainer}
       ref={drawAreaRef}
       onMouseDown={handleMouseDown}
