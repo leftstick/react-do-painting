@@ -10,7 +10,7 @@ A browser-ready efficient drawing board.
 
 ## Demo
 
-![](/react-do-painting/demo.gif)
+![](https://raw.githubusercontent.com/leftstick/react-do-painting/main/public/demo.gif)
 
 ## Install
 
