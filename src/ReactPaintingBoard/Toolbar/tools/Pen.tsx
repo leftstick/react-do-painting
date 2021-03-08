@@ -2,8 +2,7 @@ import React, { useMemo, useContext, useState } from 'react'
 
 import { PaintingStateContext } from '@/ReactPaintingBoard/state'
 import { Color, IAppContext, IDrawMode } from '@/ReactPaintingBoard/IType'
-import Palette from '../Palette'
-import { Icon } from '@/ReactPaintingBoard/common'
+import { Icon, Palette } from '@/ReactPaintingBoard/common'
 
 export default function Pen() {
   const [canPaletteVisible, setPaletteVisible] = useState(false)

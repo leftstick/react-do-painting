@@ -36,8 +36,10 @@ export function PaintingStateProvider(props: any) {
           return shape
         })
       })
+
+      setSelectedShape((sp) => (sp?.id === id ? shape : sp))
     },
-    [setShapes]
+    [setShapes, setSelectedShape]
   )
 
   const removeShape = useCallback(

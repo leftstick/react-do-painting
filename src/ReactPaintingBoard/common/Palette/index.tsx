@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
 
 import { isNumeric } from '@/ReactPaintingBoard/helper'
 import { Color } from '@/ReactPaintingBoard/IType'
@@ -9,6 +9,7 @@ import styles from './index.less'
 interface IPaletteProps {
   color: string
   width: number
+  style?: CSSProperties
   onColorChange: (color: string) => void
   onWidthChange: (width: number) => void
 }
@@ -24,15 +25,17 @@ const COLORS = [
   Color.WHITE,
 ]
 
-export default function Palette({ color, width, onColorChange, onWidthChange }: IPaletteProps) {
+export default function Palette({ color, width, onColorChange, onWidthChange, style }: IPaletteProps) {
   return (
-    <div className={styles.paletteContainer}>
+    <div className={styles.paletteContainer} style={style}>
       <input
         className={styles.inputField}
         value={width}
         type="number"
         data-type="IGNORE_BY_MOUSEUP"
         onChange={(e) => {
+          e.stopPropagation()
+          e.preventDefault()
           const val = e.target.value
           if (!isNumeric(val)) {
             return
@@ -58,6 +61,8 @@ export default function Palette({ color, width, onColorChange, onWidthChange }: 
               }}
               data-type="IGNORE_BY_MOUSEUP"
               onClick={(e) => {
+                e.stopPropagation()
+                e.preventDefault()
                 onColorChange(c)
               }}
             >

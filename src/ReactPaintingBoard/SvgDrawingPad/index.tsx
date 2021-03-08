@@ -140,10 +140,6 @@ export default function SvgDrawingPad({ id }: ISvgDrawingPadProps) {
       // draw mode
       if (drawMode === IDrawMode.DRAW) {
         setDrawing(true)
-        // ignore if there is editing text exist
-        if (divTexts.length) {
-          return
-        }
         const newShape = createShape(point, workingDrawTool) as IShape
         addShape(newShape)
       }
@@ -153,7 +149,7 @@ export default function SvgDrawingPad({ id }: ISvgDrawingPadProps) {
         return
       }
     },
-    [setDrawing, addShape, drawMode, workingDrawTool, relativeCoordinatesForEvent, divTexts]
+    [setDrawing, addShape, drawMode, workingDrawTool, relativeCoordinatesForEvent]
   )
 
   const handleMouseMove = useCallback<(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void>(
@@ -193,6 +189,8 @@ export default function SvgDrawingPad({ id }: ISvgDrawingPadProps) {
       if (e.target.dataset && e.target.dataset.type === 'IGNORE_BY_MOUSEUP') {
         return
       }
+
+      console.log('up')
 
       if (drawMode === IDrawMode.DRAW) {
         // end drawing
@@ -240,6 +238,7 @@ export default function SvgDrawingPad({ id }: ISvgDrawingPadProps) {
       if (!selectedShape) {
         return
       }
+      console.log('moving')
       updateShape(selectedShape.id, shape)
       setSelectedShape(shape)
     },
@@ -330,6 +329,9 @@ export default function SvgDrawingPad({ id }: ISvgDrawingPadProps) {
           containerBoundingClientRect={drawAreaRef.current && drawAreaRef.current.getBoundingClientRect()}
           onMoving={moving}
           onClose={removeShape}
+          onShapeChange={(id, shape) => {
+            updateShape(id, shape)
+          }}
         />
       )}
     </div>

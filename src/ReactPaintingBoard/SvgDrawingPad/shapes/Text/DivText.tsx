@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react'
+import React, { useRef, useMemo, useEffect, useCallback } from 'react'
 import classnames from 'classnames'
 
 import { IText, IPoint, IDrawingTool } from '@/ReactPaintingBoard/IType'
@@ -25,6 +25,26 @@ export function DivText({ text, onChange, drawing, onClick, onDoubleClick }: ITe
     onDoubleClick,
   ])
 
+  const onBlurHandler = useCallback(() => {
+    onChange && onChange(divRef.current?.innerText!)
+  }, [onChange, divRef])
+
+  useEffect(() => {
+    const divElement = divRef.current
+    const listener = (event: MouseEvent) => {
+      const clickInside = divElement!.contains(event.target as Node)
+      if (!clickInside && divElement?.getAttribute('contenteditable') === 'true') {
+        onBlurHandler()
+      }
+    }
+
+    document.addEventListener('click', listener, false)
+    return () => {
+      document.removeEventListener('click', listener, false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div
       ref={divRef}
@@ -37,9 +57,7 @@ export function DivText({ text, onChange, drawing, onClick, onDoubleClick }: ITe
       contentEditable={isEditing}
       onClick={!isEditing ? onClickHandler : undefined}
       onDoubleClick={!isEditing ? onDoubleClickHandler : undefined}
-      onBlur={() => {
-        onChange && onChange(divRef.current?.innerText!)
-      }}
+      onBlur={onBlurHandler}
       dangerouslySetInnerHTML={{ __html: text.words.replace(/\n/g, '<br/>') }}
     />
   )

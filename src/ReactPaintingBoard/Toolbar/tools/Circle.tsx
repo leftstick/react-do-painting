@@ -2,9 +2,7 @@ import React, { useMemo, useState, useContext } from 'react'
 
 import { PaintingStateContext } from '@/ReactPaintingBoard/state'
 import { IAppContext, Color, IDrawMode } from '@/ReactPaintingBoard/IType'
-import { Icon } from '@/ReactPaintingBoard/common'
-
-import Palette from '../Palette'
+import { Icon, Palette } from '@/ReactPaintingBoard/common'
 
 export default function Circle() {
   const [canPaletteVisible, setPaletteVisible] = useState(false)

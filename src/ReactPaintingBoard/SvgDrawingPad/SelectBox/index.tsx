@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react'
 import classnames from 'classnames'
 
 import { ILine, IPoint, IRect, IShape, IEllipse, IText } from '@/ReactPaintingBoard/IType'
+import { Palette } from '@/ReactPaintingBoard/common'
 import '@/assets/css/react-painting-icon.css'
 
 import styles from './index.less'
@@ -11,6 +12,7 @@ interface ISelectBoxProps {
   containerBoundingClientRect: DOMRect | null
   onMoving: (newShape: IShape) => void
   onClose: (shapeId: string) => void
+  onShapeChange: (shapeId: string, shape: IShape) => void
 }
 
 function toLine(line: ILine, clickPosition: IPoint, originalClickPosition: IPoint): IShape {
@@ -70,6 +72,7 @@ export default function SelectBox({
   containerBoundingClientRect,
   onMoving,
   onClose,
+  onShapeChange,
 }: ISelectBoxProps): JSX.Element {
   const [originalClickPosition, setOriginalClickPosition] = useState<IPoint>({ x: 0, y: 0 })
   const [originalClickOffsetToRect, setOriginalClickOffsetToRect] = useState<IPoint>({ x: 0, y: 0 })
@@ -190,6 +193,19 @@ export default function SelectBox({
           e.stopPropagation()
           e.preventDefault()
           onClose && onClose(shapeId)
+        }}
+      />
+      <Palette
+        style={{ top: boxRect.height, left: -1 }}
+        color={shape.lineColor}
+        width={shape.lineWidth}
+        onColorChange={(color) => {
+          onShapeChange(shapeId, { ...shape, lineColor: color } as IShape)
+          setResetOriginalShapeTrigger(new Date().getTime())
+        }}
+        onWidthChange={(width) => {
+          onShapeChange(shapeId, { ...shape, lineWidth: width } as IShape)
+          setResetOriginalShapeTrigger(new Date().getTime())
         }}
       />
     </div>
