@@ -1,4 +1,4 @@
-# react-painting-board
+# react-do-painting
 
 ## Features
 
@@ -8,26 +8,30 @@ A browser-ready efficient drawing board.
 - Built-in support for both redo and clear.
 - Ability to save screenshot.
 
+## Demo
+
+![](/react-do-painting/demo.gif)
+
 ## Install
 
 ### yarn
 
 ```bash
-yarn add react-painting-board
+yarn add react-do-painting
 ```
 
 ### npm
 
 ```bash
-npm install react-painting-board --save
+npm install react-do-painting --save
 ```
 
 ## Quick Start
 
 ```typescript
-import { ReactPaintingBoard } from 'react-painting-board'
+import { ReactDoPainting } from 'react-do-painting'
 
 export default function Example() {
-  return <ReactPaintingBoard style={{ width: 500, height: 400 }} />
+  return <ReactDoPainting style={{ width: 500, height: 400 }} />
 }
 ```

@@ -1,1 +1,1 @@
-export { default as ReactPaintingBoard } from './ReactPaintingBoard'
+export { default as ReactDoPainting } from './ReactDoPainting'
