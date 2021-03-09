@@ -1,3 +1,4 @@
+import '../assets/css/react-painting-icon.css'
 import React from 'react'
 import SvgDrawingPad from '@/ReactDoPainting/SvgDrawingPad'
 

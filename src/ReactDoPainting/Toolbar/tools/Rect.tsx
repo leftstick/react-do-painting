@@ -1,58 +1,16 @@
-import React, { useState, useMemo, useContext } from 'react'
+import React from 'react'
 
-import { PaintingStateContext } from '@/ReactDoPainting/state'
-import { IAppContext, Color, IDrawMode } from '@/ReactDoPainting/IType'
-import { Icon, Palette } from '@/ReactDoPainting/common'
+import { Color } from '@/ReactDoPainting/IType'
+import BaseDrawTool from './BaseDrawTool'
 
 export default function Rect() {
-  const [canPaletteVisible, setPaletteVisible] = useState(false)
-  const { workingDrawTool, setWorkingDrawTool, setDrawMode } = useContext(PaintingStateContext) as IAppContext
-  const [drawColor, setDrawColor] = useState<string>(workingDrawTool ? workingDrawTool.drawColor : Color.BLACK)
-  const [drawWidth, setDrawWidth] = useState(workingDrawTool ? workingDrawTool.drawWidth : 4)
-  const isActive = useMemo(() => workingDrawTool && workingDrawTool.type === 'rect', [workingDrawTool])
-
   return (
-    <Icon
+    <BaseDrawTool
       type="rect"
-      active={isActive}
       iconClass="icon-columns"
       tooltip="Rectangle"
-      onMouseEnter={() => setPaletteVisible(true)}
-      onMouseLeave={() => setPaletteVisible(false)}
-      onClick={(e) => {
-        if (isActive) {
-          return
-        }
-        setDrawMode(IDrawMode.DRAW)
-        setWorkingDrawTool({
-          type: 'rect',
-          drawColor,
-          drawWidth,
-        })
-      }}
-    >
-      {canPaletteVisible && isActive ? (
-        <Palette
-          width={drawWidth}
-          color={drawColor}
-          onWidthChange={(e) => {
-            setDrawWidth(e)
-            setWorkingDrawTool({
-              type: 'rect',
-              drawColor,
-              drawWidth: e,
-            })
-          }}
-          onColorChange={(e) => {
-            setDrawColor(e)
-            setWorkingDrawTool({
-              type: 'rect',
-              drawColor: e,
-              drawWidth,
-            })
-          }}
-        />
-      ) : null}
-    </Icon>
+      defaultColor={Color.BLACK}
+      defaultWidth={4}
+    />
   )
 }

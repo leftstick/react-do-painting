@@ -3,7 +3,6 @@ import { classnames } from '@/ReactDoPainting/helper'
 
 import { ILine, IPoint, IRect, IShape, IEllipse, IText } from '@/ReactDoPainting/IType'
 import { Palette } from '@/ReactDoPainting/common'
-import '@/assets/css/react-painting-icon.css'
 
 import styles from './index.less'
 

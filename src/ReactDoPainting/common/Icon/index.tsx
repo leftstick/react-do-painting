@@ -2,26 +2,27 @@ import React, { useState } from 'react'
 
 import { capitalize, classnames } from '@/ReactDoPainting/helper'
 import { IToolType } from '@/ReactDoPainting/IType'
-import '@/assets/css/react-painting-icon.css'
 import styles from './index.less'
+
+export type IIconClassType =
+  | 'icon-cw'
+  | 'icon-ccw'
+  | 'icon-trash-empty'
+  | 'icon-pencil'
+  | 'icon-download'
+  | 'icon-emo-unhappy'
+  | 'icon-check-empty'
+  | 'icon-eraser'
+  | 'icon-file-word'
+  | 'icon-circle-thin'
+  | 'icon-circle-empty'
+  | 'icon-move'
+  | 'icon-columns'
 
 interface IIconProps {
   type: IToolType
   tooltip?: string
-  iconClass:
-    | 'icon-cw'
-    | 'icon-ccw'
-    | 'icon-trash-empty'
-    | 'icon-pencil'
-    | 'icon-download'
-    | 'icon-emo-unhappy'
-    | 'icon-check-empty'
-    | 'icon-eraser'
-    | 'icon-file-word'
-    | 'icon-circle-thin'
-    | 'icon-circle-empty'
-    | 'icon-move'
-    | 'icon-columns'
+  iconClass: IIconClassType
   disabled?: boolean
   active?: boolean
   onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
@@ -30,7 +31,7 @@ interface IIconProps {
   children?: any
 }
 
-export default function Icon({
+export function Icon({
   type,
   disabled,
   active,

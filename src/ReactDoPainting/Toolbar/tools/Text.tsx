@@ -1,59 +1,10 @@
-import React, { useContext, useState, useMemo } from 'react'
+import React from 'react'
 
-import { PaintingStateContext } from '@/ReactDoPainting/state'
-import { IAppContext, Color, IDrawMode } from '@/ReactDoPainting/IType'
-import { Icon, Palette } from '@/ReactDoPainting/common'
+import { Color } from '@/ReactDoPainting/IType'
+import BaseDrawTool from './BaseDrawTool'
 
 export default function Text() {
-  const [canPaletteVisible, setPaletteVisible] = useState(false)
-  const { workingDrawTool, setWorkingDrawTool, setDrawMode } = useContext(PaintingStateContext) as IAppContext
-  const [drawColor, setDrawColor] = useState<string>(workingDrawTool ? workingDrawTool.drawColor : Color.BLACK)
-  const [drawWidth, setDrawWidth] = useState(
-    workingDrawTool && workingDrawTool.type === 'text' ? workingDrawTool.drawWidth : 18
-  )
-  const isActive = useMemo(() => workingDrawTool && workingDrawTool.type === 'text', [workingDrawTool])
-
   return (
-    <Icon
-      type="text"
-      active={isActive}
-      iconClass="icon-file-word"
-      onMouseEnter={() => setPaletteVisible(true)}
-      onMouseLeave={() => setPaletteVisible(false)}
-      onClick={(e) => {
-        if (isActive) {
-          return
-        }
-        setDrawMode(IDrawMode.DRAW)
-        setWorkingDrawTool({
-          type: 'text',
-          drawColor,
-          drawWidth,
-        })
-      }}
-    >
-      {canPaletteVisible && isActive ? (
-        <Palette
-          width={drawWidth}
-          color={drawColor}
-          onWidthChange={(e) => {
-            setDrawWidth(e)
-            setWorkingDrawTool({
-              type: 'text',
-              drawColor,
-              drawWidth: e,
-            })
-          }}
-          onColorChange={(e) => {
-            setDrawColor(e)
-            setWorkingDrawTool({
-              type: 'text',
-              drawColor: e,
-              drawWidth,
-            })
-          }}
-        />
-      ) : null}
-    </Icon>
+    <BaseDrawTool type="text" iconClass="icon-file-word" tooltip="Text" defaultColor={Color.BLACK} defaultWidth={18} />
   )
 }

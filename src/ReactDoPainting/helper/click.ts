@@ -1,7 +1,7 @@
 import { useRef, useCallback } from 'react'
 
 import { ICancelablePromise } from '@/ReactDoPainting/IType'
-import { createCancelablePromise, delay } from '@/ReactDoPainting/helper'
+import { createCancelablePromise, delay } from './promise'
 
 interface IOnClickHandler {
   (e: MouseEvent): void

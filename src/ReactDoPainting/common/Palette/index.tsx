@@ -2,7 +2,7 @@ import React, { CSSProperties } from 'react'
 
 import { isNumeric } from '@/ReactDoPainting/helper'
 import { Color } from '@/ReactDoPainting/IType'
-import { Divider } from '@/ReactDoPainting/common'
+import Divider from '../Divider'
 
 import styles from './index.less'
 

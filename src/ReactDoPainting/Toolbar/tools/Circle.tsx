@@ -1,57 +1,16 @@
-import React, { useMemo, useState, useContext } from 'react'
+import React from 'react'
 
-import { PaintingStateContext } from '@/ReactDoPainting/state'
-import { IAppContext, Color, IDrawMode } from '@/ReactDoPainting/IType'
-import { Icon, Palette } from '@/ReactDoPainting/common'
+import { Color } from '@/ReactDoPainting/IType'
+import BaseDrawTool from './BaseDrawTool'
 
 export default function Circle() {
-  const [canPaletteVisible, setPaletteVisible] = useState(false)
-  const { workingDrawTool, setWorkingDrawTool, setDrawMode } = useContext(PaintingStateContext) as IAppContext
-  const [drawColor, setDrawColor] = useState<string>(workingDrawTool ? workingDrawTool.drawColor : Color.BLACK)
-  const [drawWidth, setDrawWidth] = useState(workingDrawTool ? workingDrawTool.drawWidth : 4)
-  const isActive = useMemo(() => workingDrawTool && workingDrawTool.type === 'circle', [workingDrawTool])
   return (
-    <Icon
+    <BaseDrawTool
       type="circle"
-      active={isActive}
       iconClass="icon-circle-empty"
       tooltip="Circle"
-      onMouseEnter={() => setPaletteVisible(true)}
-      onMouseLeave={() => setPaletteVisible(false)}
-      onClick={(e) => {
-        if (isActive) {
-          return
-        }
-        setDrawMode(IDrawMode.DRAW)
-        setWorkingDrawTool({
-          type: 'circle',
-          drawColor,
-          drawWidth,
-        })
-      }}
-    >
-      {canPaletteVisible && isActive ? (
-        <Palette
-          width={drawWidth}
-          color={drawColor}
-          onWidthChange={(e) => {
-            setDrawWidth(e)
-            setWorkingDrawTool({
-              type: 'circle',
-              drawColor,
-              drawWidth: e,
-            })
-          }}
-          onColorChange={(e) => {
-            setDrawColor(e)
-            setWorkingDrawTool({
-              type: 'circle',
-              drawColor: e,
-              drawWidth,
-            })
-          }}
-        />
-      ) : null}
-    </Icon>
+      defaultColor={Color.BLACK}
+      defaultWidth={4}
+    />
   )
 }
