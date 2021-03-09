@@ -1,8 +1,7 @@
 import React, { useRef, useMemo, useEffect, useCallback } from 'react'
-import classnames from 'classnames'
 
 import { IText, IPoint, IDrawingTool } from '@/ReactDoPainting/IType'
-import { id, useClickHooks } from '@/ReactDoPainting/helper'
+import { id, useClickHooks, classnames } from '@/ReactDoPainting/helper'
 
 import styles from './index.less'
 
@@ -44,6 +43,12 @@ export function DivText({ text, onChange, drawing, onClick, onDoubleClick }: ITe
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (isEditing) {
+      divRef.current?.focus()
+    }
+  }, [isEditing])
 
   return (
     <div

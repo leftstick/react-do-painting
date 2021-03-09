@@ -1,8 +1,7 @@
 import React from 'react'
-import classnames from 'classnames'
 import SvgDrawingPad from '@/ReactDoPainting/SvgDrawingPad'
 
-import { id } from '@/ReactDoPainting/helper'
+import { id, classnames } from '@/ReactDoPainting/helper'
 import { PaintingStateProvider } from '@/ReactDoPainting/state'
 import Toolbar from '@/ReactDoPainting/Toolbar'
 

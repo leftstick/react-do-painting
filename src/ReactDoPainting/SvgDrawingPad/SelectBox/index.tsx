@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react'
-import classnames from 'classnames'
+import { classnames } from '@/ReactDoPainting/helper'
 
 import { ILine, IPoint, IRect, IShape, IEllipse, IText } from '@/ReactDoPainting/IType'
 import { Palette } from '@/ReactDoPainting/common'

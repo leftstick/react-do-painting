@@ -1,8 +1,7 @@
 import React from 'react'
-import classnames from 'classnames'
 
 import { IEllipse, IPoint, IDrawingTool } from '@/ReactDoPainting/IType'
-import { id } from '@/ReactDoPainting/helper'
+import { id, classnames } from '@/ReactDoPainting/helper'
 
 import styles from './index.less'
 

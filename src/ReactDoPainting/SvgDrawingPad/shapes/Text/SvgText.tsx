@@ -1,8 +1,7 @@
 import React, { useCallback, useRef } from 'react'
-import classnames from 'classnames'
 
 import { ICancelablePromise, IText } from '@/ReactDoPainting/IType'
-import { id, createCancelablePromise, delay } from '@/ReactDoPainting/helper'
+import { id, createCancelablePromise, delay, classnames } from '@/ReactDoPainting/helper'
 
 import styles from './index.less'
 
