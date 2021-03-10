@@ -4,6 +4,7 @@
 
 A browser-ready efficient drawing board.
 
+- Zero dependency.
 - Support for drawing strokes.
 - Built-in support for both redo and clear.
 - Ability to save screenshot.
