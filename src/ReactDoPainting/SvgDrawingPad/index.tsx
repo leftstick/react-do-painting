@@ -1,6 +1,7 @@
 import React, { useMemo, useContext, useRef, useCallback, useEffect, useState } from 'react'
 import {
   ILine,
+  IArrowLine,
   IRect,
   IShape,
   IPoint,
@@ -16,6 +17,10 @@ import {
   Line,
   createLine,
   drawLine,
+  ArrowLineMarker,
+  ArrowLine,
+  createArrowLine,
+  drawArrowLine,
   Rect,
   createRect,
   drawRect,
@@ -33,6 +38,9 @@ function createShape(point: IPoint, workingDrawTool: IDrawingTool): IShape | nul
   if (workingDrawTool.type === 'line') {
     return createLine(point, workingDrawTool)
   }
+  if (workingDrawTool.type === 'arrow-line') {
+    return createArrowLine(point, workingDrawTool)
+  }
   if (workingDrawTool.type === 'rect') {
     return createRect(point, workingDrawTool)
   }
@@ -49,6 +57,10 @@ function drawShape(point: IPoint, workingDrawTool: IDrawingTool, shapes: IShape[
   if (workingDrawTool.type === 'line') {
     const lastLine = shapes[shapes.length - 1] as ILine
     return drawLine(lastLine, point)
+  }
+  if (workingDrawTool.type === 'arrow-line') {
+    const lastLine = shapes[shapes.length - 1] as ILine
+    return drawArrowLine(lastLine, point)
   }
   if (workingDrawTool.type === 'rect') {
     const lastRect = shapes[shapes.length - 1] as IRect
@@ -70,6 +82,10 @@ function cleanJustClickedShape(shapes: IShape[], removeShape: (shapeId: string) 
   }
   const lastShape = shapes[shapes.length - 1]
   if (lastShape.type === 'line' && (lastShape as ILine).points.length === 1) {
+    removeShape(lastShape.id)
+    return true
+  }
+  if (lastShape.type === 'arrow-line' && (lastShape as IArrowLine).points.length === 1) {
     removeShape(lastShape.id)
     return true
   }
@@ -107,6 +123,7 @@ export default function SvgDrawingPad({ id }: ISvgDrawingPadProps) {
     cleanRedoShapes,
   } = useContext(PaintingStateContext) as IAppContext
   const lines = useMemo(() => shapes.filter((s) => s.type === 'line'), [shapes])
+  const arrowLines = useMemo(() => shapes.filter((s) => s.type === 'arrow-line'), [shapes])
   const rects = useMemo(() => shapes.filter((s) => s.type === 'rect'), [shapes])
   const ellipses = useMemo(() => shapes.filter((s) => s.type === 'circle'), [shapes])
   const divTexts = useMemo(() => shapes.filter((s) => s.type === 'text'), [shapes])
@@ -190,8 +207,6 @@ export default function SvgDrawingPad({ id }: ISvgDrawingPadProps) {
         return
       }
 
-      console.log('up')
-
       if (drawMode === IDrawMode.DRAW) {
         // end drawing
         setDrawing(false)
@@ -238,7 +253,6 @@ export default function SvgDrawingPad({ id }: ISvgDrawingPadProps) {
       if (!selectedShape) {
         return
       }
-      console.log('moving')
       updateShape(selectedShape.id, shape)
       setSelectedShape(shape)
     },
@@ -268,11 +282,26 @@ export default function SvgDrawingPad({ id }: ISvgDrawingPadProps) {
       onDragOver={(e) => e.preventDefault()}
     >
       <svg className={styles.drawing}>
+        <defs>
+          {arrowLines.map((line, index) => (
+            <ArrowLineMarker key={line.id} arrowLine={line as IArrowLine} />
+          ))}
+        </defs>
         {lines.map((line, index) => (
           <Line
             drawing={drawing}
             key={line.id}
             line={line as ILine}
+            onClick={(e) => {
+              selectShape(e, line)
+            }}
+          />
+        ))}
+        {arrowLines.map((line, index) => (
+          <ArrowLine
+            drawing={drawing}
+            key={line.id}
+            arrowLine={line as IArrowLine}
             onClick={(e) => {
               selectShape(e, line)
             }}

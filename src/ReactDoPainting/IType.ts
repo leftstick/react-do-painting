@@ -8,7 +8,7 @@ export interface IPoint {
   y: number
 }
 
-export type IShapeType = 'line' | 'text' | 'rect' | 'circle'
+export type IShapeType = 'line' | 'text' | 'rect' | 'circle' | 'arrow-line'
 
 export interface IShape {
   id: string
@@ -18,6 +18,10 @@ export interface IShape {
 }
 
 export interface ILine extends IShape {
+  points: IPoint[]
+}
+
+export interface IArrowLine extends IShape {
   points: IPoint[]
 }
 

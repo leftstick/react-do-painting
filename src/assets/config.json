@@ -89,6 +89,12 @@
       "css": "cancel-circled",
       "code": 59398,
       "src": "fontawesome"
+    },
+    {
+      "uid": "fa0118a65fc8dee739469f6901bbd189",
+      "css": "level-down",
+      "code": 59399,
+      "src": "entypo"
     }
   ]
 }

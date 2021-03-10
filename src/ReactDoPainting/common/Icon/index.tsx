@@ -18,6 +18,7 @@ export type IIconClassType =
   | 'icon-circle-empty'
   | 'icon-move'
   | 'icon-columns'
+  | 'icon-level-down'
 
 interface IIconProps {
   type: IToolType

@@ -1,4 +1,5 @@
 export * from './Line'
+export * from './ArrowLine'
 export * from './Rect'
 export * from './Ellipse'
 export * from './Text/SvgText'

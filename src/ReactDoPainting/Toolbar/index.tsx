@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { PaintingStateContext } from '@/ReactDoPainting/state'
 import { Divider } from '@/ReactDoPainting/common'
 
-import { Undo, Redo, Select, Pen, Text, Rect, Circle, Clean, Save } from '@/ReactDoPainting/Toolbar/tools'
+import { Undo, Redo, Select, Pen, Text, Rect, Circle, Clean, Save, ArrowLine } from '@/ReactDoPainting/Toolbar/tools'
 
 import styles from './index.less'
 
@@ -25,6 +25,7 @@ export default function Toolbar({ padId }: IToolbarProps) {
       <Divider length={25} />
       <Select />
       <Pen />
+      <ArrowLine />
       <Text />
       <Rect />
       <Circle />
