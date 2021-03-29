@@ -7,7 +7,7 @@ export default function ArrowLine() {
   return (
     <BaseDrawTool
       type="arrow-line"
-      iconClass="icon-level-down"
+      iconClass="level-down"
       tooltip="Arrow Line"
       defaultColor={Color.BLACK}
       defaultWidth={4}

@@ -5,10 +5,14 @@ const axios = require('axios')
 const fs = require('fs')
 const path = require('path')
 const https = require('https')
+const fontBlast = require('font-blast')
 
 const ASSET_PATH = path.resolve(__dirname, '..', 'src', 'assets')
 
-const DOWNLOAD_ZIP_PATH = path.resolve(ASSET_PATH, 'downloaded.zip')
+const TMP_PATH = path.resolve(ASSET_PATH, 'tmp')
+const DOWNLOAD_ZIP_PATH = path.resolve(TMP_PATH, 'downloaded.zip')
+const TMP_SVG_FONT_PATH = path.resolve(TMP_PATH, 'icons')
+const SVG_ICON_PATH = path.resolve(ASSET_PATH, 'icons')
 
 const instance = axios.default.create({
   httpsAgent: new https.Agent({
@@ -17,16 +21,30 @@ const instance = axios.default.create({
 })
 
 function retrieveSession() {
-  const form = new FormData()
-  form.append('config', fs.createReadStream(path.resolve(ASSET_PATH, 'config.json')))
+  const data = new FormData()
+  data.append('config', fs.createReadStream(path.resolve(ASSET_PATH, 'config.json')))
 
-  return instance
-    .post('https://fontello.com/', form, {
-      headers: form.getHeaders(),
+  return instance({
+    method: 'POST',
+    url: 'https://fontello.com/',
+    headers: {
+      ...data.getHeaders(),
+    },
+    data: data,
+  }).then((res) => {
+    return res.data
+  })
+}
+
+function createTmpPath() {
+  return new Promise((resolve, reject) => {
+    fs.mkdir(TMP_PATH, (err) => {
+      if (err) {
+        return reject(err)
+      }
+      return resolve()
     })
-    .then((res) => {
-      return res.data
-    })
+  })
 }
 
 async function downloadFont(sessionId) {
@@ -47,49 +65,41 @@ async function downloadFont(sessionId) {
 
 function extractDownloadedZip() {
   const zip = new AdmZip(DOWNLOAD_ZIP_PATH)
-  zip.extractAllTo(path.resolve(ASSET_PATH, 'downloaded'), true)
-  const [fontFolder] = fs.readdirSync(path.resolve(ASSET_PATH, 'downloaded'))
-  return path.resolve(ASSET_PATH, 'downloaded', fontFolder)
+  const downloadedPath = path.resolve(TMP_PATH, 'downloaded')
+  zip.extractAllTo(downloadedPath, true)
+  const [fontFolder] = fs.readdirSync(downloadedPath)
+  return path.resolve(downloadedPath, fontFolder)
 }
 
-function moveFonts(fontFolder) {
-  const moveCss = new Promise((resolve, reject) => {
-    fs.rename(path.resolve(fontFolder, 'css'), path.resolve(ASSET_PATH, 'css'), function (err) {
+function moveSvgs() {
+  return new Promise((resolve, reject) => {
+    fs.rename(path.resolve(TMP_SVG_FONT_PATH, 'svg'), SVG_ICON_PATH, (err) => {
       if (err) {
         return reject(err)
       }
       resolve()
     })
   })
-  const moveFont = new Promise((resolve, reject) => {
-    fs.rename(path.resolve(fontFolder, 'font'), path.resolve(ASSET_PATH, 'font'), function (err) {
-      if (err) {
-        return reject(err)
-      }
-      resolve()
-    })
-  })
-
-  return Promise.all([moveCss, moveFont])
 }
 
-del([
-  path.resolve(ASSET_PATH, 'css'),
-  path.resolve(ASSET_PATH, 'font'),
-  path.resolve(ASSET_PATH, 'downloaded'),
-  path.resolve(ASSET_PATH, 'downloaded.zip'),
-])
+del([TMP_PATH, SVG_ICON_PATH])
+  .then(createTmpPath)
   .then(() => {
     return retrieveSession()
   })
   .then((sessionId) => {
+    console.log('session retrieved: ' + sessionId)
     return downloadFont(sessionId)
   })
   .then(extractDownloadedZip)
-  .then(moveFonts)
+  .then((fontFolder) => {
+    console.log('new font downloaded!!!')
+    return fontBlast(path.resolve(fontFolder, 'font', 'react-painting-icon.svg'), TMP_SVG_FONT_PATH)
+  })
+  .then(moveSvgs)
   .then(() => {
-    return del([path.resolve(ASSET_PATH, 'downloaded'), path.resolve(ASSET_PATH, 'downloaded.zip')])
+    return del([TMP_PATH])
   })
   .then(() => {
-    console.log('new font downloaded!!!')
+    console.log('svg icons generated!!!')
   })

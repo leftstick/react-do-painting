@@ -33,6 +33,7 @@
     "del": "^6.0.0",
     "dumi": "^1.1.10",
     "father-build": "^1.19.2",
+    "font-blast": "^0.7.0",
     "form-data": "^4.0.0",
     "gh-pages": "^3.1.0",
     "husky": "^5.2.0",

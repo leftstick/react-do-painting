@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react'
 import { classnames } from '@/ReactDoPainting/helper'
 
 import { ILine, IPoint, IRect, IShape, IEllipse, IText } from '@/ReactDoPainting/IType'
-import { Palette } from '@/ReactDoPainting/common'
+import { Palette, BaseIcon } from '@/ReactDoPainting/common'
 
 import styles from './index.less'
 
@@ -185,9 +185,10 @@ export default function SelectBox({
         setResetOriginalShapeTrigger(new Date().getTime())
       }}
     >
-      <i
-        className={classnames(styles.closeBtn, 'icon-cancel-circled')}
-        data-type="IGNORE_BY_MOUSEUP"
+      <BaseIcon
+        type="cancel-circled"
+        className={classnames(styles.closeBtn)}
+        dataType="IGNORE_BY_MOUSEUP"
         onClick={(e) => {
           e.stopPropagation()
           e.preventDefault()

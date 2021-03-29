@@ -5,12 +5,6 @@ import BaseDrawTool from './BaseDrawTool'
 
 export default function Rect() {
   return (
-    <BaseDrawTool
-      type="rect"
-      iconClass="icon-columns"
-      tooltip="Rectangle"
-      defaultColor={Color.BLACK}
-      defaultWidth={4}
-    />
+    <BaseDrawTool type="rect" iconClass="columns" tooltip="Rectangle" defaultColor={Color.BLACK} defaultWidth={4} />
   )
 }

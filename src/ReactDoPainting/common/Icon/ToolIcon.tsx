@@ -2,28 +2,30 @@ import React, { useState } from 'react'
 
 import { capitalize, classnames } from '@/ReactDoPainting/helper'
 import { IToolType } from '@/ReactDoPainting/IType'
+import { BaseIcon } from './BaseIcon'
+
 import styles from './index.less'
 
-export type IIconClassType =
-  | 'icon-cw'
-  | 'icon-ccw'
-  | 'icon-trash-empty'
-  | 'icon-pencil'
-  | 'icon-download'
-  | 'icon-emo-unhappy'
-  | 'icon-check-empty'
-  | 'icon-eraser'
-  | 'icon-file-word'
-  | 'icon-circle-thin'
-  | 'icon-circle-empty'
-  | 'icon-move'
-  | 'icon-columns'
-  | 'icon-level-down'
+export type IToolbarIconClassType =
+  | 'cw'
+  | 'ccw'
+  | 'trash-empty'
+  | 'pencil'
+  | 'download'
+  | 'emo-unhappy'
+  | 'check-empty'
+  | 'eraser'
+  | 'file-word'
+  | 'circle-thin'
+  | 'circle-empty'
+  | 'move'
+  | 'columns'
+  | 'level-down'
 
 interface IIconProps {
   type: IToolType
   tooltip?: string
-  iconClass: IIconClassType
+  iconClass: IToolbarIconClassType
   disabled?: boolean
   active?: boolean
   onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
@@ -32,7 +34,7 @@ interface IIconProps {
   children?: any
 }
 
-export function Icon({
+export function ToolIcon({
   type,
   disabled,
   active,
@@ -44,7 +46,7 @@ export function Icon({
   onMouseLeave,
 }: IIconProps) {
   const [tipVisible, setTipVisible] = useState(false)
-
+  console.log('classnames(styles.icon)', styles.icon)
   return (
     <div
       onMouseEnter={() => {
@@ -62,7 +64,7 @@ export function Icon({
         }
       }}
     >
-      <i className={classnames(styles.icon, iconClass)} />
+      <BaseIcon type={iconClass} className={classnames(styles.icon)} />
       {!children && (
         <div className={classnames(styles.tooltip, { [styles.hide]: !tipVisible })}>
           {tooltip ? tooltip : capitalize(type)}

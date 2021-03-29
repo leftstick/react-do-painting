@@ -5,12 +5,6 @@ import BaseDrawTool from './BaseDrawTool'
 
 export default function Circle() {
   return (
-    <BaseDrawTool
-      type="circle"
-      iconClass="icon-circle-empty"
-      tooltip="Circle"
-      defaultColor={Color.BLACK}
-      defaultWidth={4}
-    />
+    <BaseDrawTool type="circle" iconClass="circle-empty" tooltip="Circle" defaultColor={Color.BLACK} defaultWidth={4} />
   )
 }

@@ -2,11 +2,11 @@ import React, { useState, useMemo, useContext } from 'react'
 
 import { PaintingStateContext } from '@/ReactDoPainting/state'
 import { IAppContext, IDrawMode, IShapeType } from '@/ReactDoPainting/IType'
-import { Icon, Palette, IIconClassType } from '@/ReactDoPainting/common'
+import { ToolIcon, Palette, IToolbarIconClassType } from '@/ReactDoPainting/common'
 
 interface IBaseDrawTool {
   type: IShapeType
-  iconClass: IIconClassType
+  iconClass: IToolbarIconClassType
   tooltip: string
   defaultColor: string
   defaultWidth: number
@@ -23,7 +23,7 @@ export default function BaseDrawTool({ type, iconClass, tooltip, defaultColor, d
   )
   const isActive = useMemo(() => workingDrawTool && workingDrawTool.type === type, [workingDrawTool, type])
   return (
-    <Icon
+    <ToolIcon
       type={type}
       active={isActive}
       iconClass={iconClass}
@@ -64,6 +64,6 @@ export default function BaseDrawTool({ type, iconClass, tooltip, defaultColor, d
           }}
         />
       ) : null}
-    </Icon>
+    </ToolIcon>
   )
 }
