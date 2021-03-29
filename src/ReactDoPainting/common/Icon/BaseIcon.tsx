@@ -42,7 +42,6 @@ interface IBaseIconProps {
 }
 
 export function BaseIcon({ type, style, className, onClick, dataType }: IBaseIconProps) {
-  console.log('className', className)
   let Svg = null
   if (type === 'cancel-circled') {
     Svg = CancelCircledSvg
