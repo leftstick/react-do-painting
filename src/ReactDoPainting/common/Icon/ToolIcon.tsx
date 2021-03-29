@@ -46,7 +46,6 @@ export function ToolIcon({
   onMouseLeave,
 }: IIconProps) {
   const [tipVisible, setTipVisible] = useState(false)
-  console.log('classnames(styles.icon)', styles.icon)
   return (
     <div
       onMouseEnter={() => {
